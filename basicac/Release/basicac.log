@@ -1,0 +1,8 @@
+﻿  main.cpp
+D:\VS Projects\basicac\basicac\main.cpp(18,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Generating code
+  5 of 13 functions (38.5%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  basicac.vcxproj -> D:\VS Projects\basicac\Release\basicac.exe

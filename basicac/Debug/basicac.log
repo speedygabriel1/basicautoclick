@@ -1,4 +1,0 @@
-﻿  main.cpp
-D:\VS Projects\basicac\basicac\main.cpp(18,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-D:\VS Projects\basicac\basicac\main.cpp(58,11): warning C4552: '!=': result of expression not used
-  basicac.vcxproj -> D:\VS Projects\basicac\Debug\basicac.exe

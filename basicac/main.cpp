@@ -35,7 +35,7 @@ void ac()
 			if (firstclick == 1) {
 				cpsdelay1 = RandomInt(maxcpsdelay, mincpsdelay);
 				GetCursorPos(&pt);
-				Sleep(realcpsdelay1);
+				Sleep(cpsdelay1);
 				PostMessage(hwnd, WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM(pt.x, pt.y));
 				firstclick = 0;
 			}

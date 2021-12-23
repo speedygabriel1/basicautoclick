@@ -18,50 +18,11 @@ int maxcpsdelay;
 int cpsdelay1;
 int cpsdelay2;
 
-double fcpsdelay1;
-double realcpsdelay1;
-double fcpsdelay2;
-double realcpsdelay2;
 
 int RandomInt(int min, int max)
 {
 	srand((unsigned int)time(0));
 	return ((rand() % (int)(((max)+1) - (min))) + (min));
-}
-
-void timerSleep(double seconds) { //credits to https://blat-blatnik.github.io/computerBear/making-accurate-sleep-function/ its very good function this one
-	using namespace std::chrono;
-
-	static HANDLE timer = CreateWaitableTimer(NULL, FALSE, NULL);
-	static double estimate = 5e-3;
-	static double mean = 5e-3;
-	static double m2 = 0;
-	static int64_t count = 1;
-
-	while (seconds - estimate > 1e-7) {
-		double toWait = seconds - estimate;
-		LARGE_INTEGER due;
-		due.QuadPart = -int64_t(toWait * 1e7);
-		auto start = high_resolution_clock::now();
-		SetWaitableTimerEx(timer, &due, 0, NULL, NULL, NULL, 0);
-		WaitForSingleObject(timer, INFINITE);
-		auto end = high_resolution_clock::now();
-
-		double observed = (end - start).count() / 1e9;
-		seconds -= observed;
-
-		++count;
-		double error = observed - toWait;
-		double delta = error - mean;
-		mean += delta / count;
-		m2 += delta * (error - mean);
-		double stddev = sqrt(m2 / (count - 1));
-		estimate = mean + stddev;
-	}
-
-	// spin lock
-	auto start = high_resolution_clock::now();
-	while ((high_resolution_clock::now() - start).count() / 1e9 < seconds);
 }
 
 void ac() 
@@ -73,26 +34,19 @@ void ac()
 		{
 			if (firstclick == 1) {
 				cpsdelay1 = RandomInt(maxcpsdelay, mincpsdelay);
-				fcpsdelay1 = cpsdelay1;
-				realcpsdelay1 = fcpsdelay1 / 1000;
 				GetCursorPos(&pt);
-				timerSleep(realcpsdelay1);
+				Sleep(realcpsdelay1);
 				PostMessage(hwnd, WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM(pt.x, pt.y));
 				firstclick = 0;
 			}
 			else {
 				cpsdelay1 = RandomInt(maxcpsdelay, mincpsdelay);
-				fcpsdelay1 = cpsdelay1;
-				realcpsdelay1 = fcpsdelay1 / 1000;
-				cpsdelay2 = RandomInt(maxcpsdelay, mincpsdelay);
-				fcpsdelay2 = cpsdelay2;
-				realcpsdelay2 = fcpsdelay2 / 1000;
-				cout << fcpsdelay1 << endl;
-				cout << realcpsdelay1 << endl;
+				
 				GetCursorPos(&pt);
-				timerSleep(realcpsdelay1);
+				Sleep(cpsdelay1);
 				PostMessage(hwnd, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(pt.x, pt.y));
-				timerSleep(realcpsdelay2);
+				cpsdelay2 = RandomInt(maxcpsdelay, mincpsdelay);
+				Sleep(cpsdelay2);
 				PostMessage(hwnd, WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM(pt.x, pt.y));
 			}
 
@@ -102,12 +56,13 @@ void ac()
 			firstclick = 1;
 			Sleep(1);
 		}
-		timerSleep(0.001);
+		Sleep(1);
 	}
 }
 
 int main()
 {
+	timeBeginPeriod(0);
 	cout << "min cps" << endl;
 	cin >> mincps;
 	mincpsdelay = 500 / mincps;
